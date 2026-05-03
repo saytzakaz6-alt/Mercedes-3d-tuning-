@@ -1,395 +1,167 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mercedes 3D Tuning</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#080808;color:#fff;font-family:'Rajdhani',sans-serif;overflow-x:hidden}
-html{scroll-behavior:smooth}
-
-:root{--gold:#F0C040;--dark:#080808}
-
-nav{position:fixed;top:0;width:100%;z-index:500;padding:20px 60px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.9)}
-.logo{font-family:'Bebas Neue';font-size:24px;font-weight:900;letter-spacing:4px;color:var(--gold);text-shadow:0 0 20px rgba(240,192,64,0.5)}
-.nav-links{display:flex;gap:40px;list-style:none}
-.nav-links a{text-decoration:none;color:#aaa;font-size:13px;letter-spacing:3px;text-transform:uppercase;transition:color 0.3s}
-.nav-links a:hover{color:var(--gold)}
-.nav-btn{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px 28px;font-size:11px;letter-spacing:3px;cursor:pointer;transition:all 0.3s}
-.nav-btn:hover{background:var(--gold);color:#000;box-shadow:0 0 40px rgba(240,192,64,0.3)}
-
-#hero{height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(180deg,#0a0a0a 0%,#050505 100%)}
-
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 80%,rgba(201,168,76,0.08) 0%,transparent 70%)}
-
-.grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:60px 60px;animation:gridMove 20s linear infinite}
-@keyframes gridMove{0%{transform:translateY(0)}100%{transform:translateY(60px)}}
-
-.car-scene{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:900px;height:500px;perspective:1200px}
-.car-3d{animation:carFloat 6s ease-in-out infinite}
-@keyframes carFloat{0%,100%{transform:rotateY(-5deg) translateY(0)}50%{transform:rotateY(5deg) translateY(-15px)}}
-
-.car-body{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);width:700px;height:220px}
-.car-svg{width:100%;height:100%;filter:drop-shadow(0 20px 60px rgba(201,168,76,0.4))}
-
-.hero-content{position:relative;z-index:10;text-align:center;top:-100px}
-.hero-tag{display:inline-block;border:1px solid var(--gold);color:var(--gold);padding:6px 20px;font-size:11px;letter-spacing:5px;text-transform:uppercase;margin-bottom:30px;animation:fadeUp 1s ease both}
-.hero-title{font-family:'Bebas Neue';font-size:120px;line-height:0.9;letter-spacing:2px;animation:fadeUp 1s ease 0.2s both}
-.hero-title .gold{color:var(--gold);text-shadow:0 0 60px rgba(240,192,64,0.4)}
-.hero-sub{font-size:16px;letter-spacing:6px;color:#666;margin:20px 0 50px;text-transform:uppercase;animation:fadeUp 1s ease 0.4s both}
-
-.hero-btns{display:flex;gap:20px;justify-content:center;animation:fadeUp 1s ease 0.6s both}
-.btn-primary{background:var(--gold);color:#000;border:none;padding:16px 50px;font-family:'Bebas Neue';font-size:12px;letter-spacing:3px;font-weight:700;cursor:pointer;transition:all 0.3s}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 20px 40px rgba(240,192,64,0.4)}
-.btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.2);padding:16px 50px;font-family:'Bebas Neue';font-size:12px;letter-spacing:3px;cursor:pointer;transition:all 0.3s}
-.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px)}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-
-.stats-bar{position:absolute;bottom:40px;left:0;right:0;display:flex;justify-content:center;gap:80px;z-index:10;animation:fadeUp 1s ease 0.8s both}
-.stat-item{text-align:center}
-.stat-num{font-family:'Bebas Neue';font-size:28px;color:var(--gold);display:block}
-.stat-label{font-size:11px;letter-spacing:3px;color:#555;text-transform:uppercase}
-
-#services{padding:120px 60px;background:linear-gradient(180deg,#050505,#0d0d0d)}
-.section-header{text-align:center;margin-bottom:80px}
-.section-tag{font-size:11px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:15px}
-.section-title{font-family:'Bebas Neue';font-size:80px;line-height:1;color:#fff}
-.section-title span{color:var(--gold)}
-
-.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:1200px;margin:0 auto}
-.service-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.05);padding:50px 40px;position:relative;overflow:hidden;transition:all 0.4s ease;cursor:pointer}
-.service-card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-5px)}
-.service-num{font-family:'Bebas Neue';font-size:11px;color:var(--gold);letter-spacing:3px;margin-bottom:25px}
-.service-icon{font-size:48px;margin-bottom:25px}
-.service-name{font-family:'Bebas Neue';font-size:32px;letter-spacing:2px;color:#fff;margin-bottom:15px}
-.service-desc{font-size:14px;line-height:1.7;color:#666;font-weight:300}
-
-#configurator{padding:120px 60px;background:#050505}
-.config-container{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 400px;gap:60px;align-items:center}
-.car-viewer{aspect-ratio:16/10;background:linear-gradient(135deg,#0d0d0d,#111);border:1px solid rgba(255,255,255,0.05);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:100px}
-
-.config-title{font-family:'Bebas Neue';font-size:60px;line-height:1;margin-bottom:10px}
-.config-title span{color:var(--gold)}
-.config-subtitle{color:#555;font-size:13px;letter-spacing:3px;text-transform:uppercase;margin-bottom:50px}
-.config-section{margin-bottom:35px}
-.config-label{font-size:11px;letter-spacing:4px;color:#666;text-transform:uppercase;margin-bottom:15px;display:block}
-
-.color-options{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.color-btn{aspect-ratio:1;border:2px solid transparent;cursor:pointer;transition:all 0.3s}
-.color-btn:hover{border-color:var(--gold);transform:scale(1.1)}
-.color-1{background:#1a1a1a}
-.color-2{background:linear-gradient(135deg,#C0C0C0,#808080)}
-.color-3{background:#CC2200}
-.color-4{background:#0066CC}
-
-.slider{width:100%;height:4px;background:linear-gradient(90deg,#333,var(--gold),#333);border-radius:2px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none}
-.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;background:var(--gold);cursor:pointer;border-radius:50%;box-shadow:0 0 15px rgba(240,192,64,0.5)}
-.slider::-moz-range-thumb{width:18px;height:18px;background:var(--gold);cursor:pointer;border-radius:50%;border:none;box-shadow:0 0 15px rgba(240,192,64,0.5)}
-
-.slider-value{font-family:'Bebas Neue';font-size:24px;color:var(--gold);margin-top:10px}
-
-#portfolio{padding:120px 60px;background:linear-gradient(180deg,#0d0d0d,#050505)}
-.portfolio-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:30px}
-.portfolio-item{aspect-ratio:16/9;background:linear-gradient(135deg,#1a1a1a,#0d0d0d);border:1px solid rgba(255,255,255,0.05);position:relative;overflow:hidden;cursor:pointer;transition:all 0.4s ease;display:flex;align-items:center;justify-content:center;font-size:80px}
-.portfolio-item:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-5px)}
-.portfolio-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent 40%);display:flex;flex-direction:column;justify-content:flex-end;padding:40px;opacity:0;transition:opacity 0.4s}
-.portfolio-item:hover .portfolio-overlay{opacity:1}
-.portfolio-title{font-family:'Bebas Neue';font-size:28px;letter-spacing:2px;margin-bottom:10px}
-.portfolio-desc{font-size:13px;color:#999;letter-spacing:2px}
-
-footer{padding:80px 60px 40px;background:#050505;border-top:1px solid rgba(255,255,255,0.05)}
-.footer-content{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:60px;margin-bottom:60px}
-.footer-col h3{font-family:'Bebas Neue';font-size:16px;letter-spacing:3px;margin-bottom:20px;color:#fff}
-.footer-col ul{list-style:none}
-.footer-col ul li{margin-bottom:12px}
-.footer-col ul li a{text-decoration:none;color:#666;font-size:13px;transition:color 0.3s}
-.footer-col ul li a:hover{color:var(--gold)}
-.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:40px;border-top:1px solid rgba(255,255,255,0.05)}
-.footer-left{font-size:12px;color:#444;letter-spacing:2px}
-.footer-social{display:flex;gap:25px}
-.footer-social a{color:#666;text-decoration:none;font-size:13px;letter-spacing:2px;transition:color 0.3s;cursor:pointer}
-.footer-social a:hover{color:var(--gold)}
-
-@media(max-width:768px){
-nav{padding:15px 30px}
-.nav-links{gap:20px;font-size:11px}
-.services-grid{grid-template-columns:1fr}
-.config-container{grid-template-columns:1fr;gap:40px}
-.portfolio-grid{grid-template-columns:1fr}
-.footer-content{grid-template-columns:repeat(2,1fr);gap:40px}
-.footer-bottom{flex-direction:column;gap:20px}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercedes-Benz 3D Tuning Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-border:hover {
+            border-color: #007bff;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+            transition: 0.3s;
+        }
+        .car-display {
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        /* Avtomobil joylashgan joy effekti */
+        .platform {
+            width: 500px;
+            height: 100px;
+            background: rgba(0, 123, 255, 0.2);
+            filter: blur(50px);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 20px;
+        }
+    </style>
 </head>
-<body>
+<body class="h-screen flex flex-col">
 
-<nav>
-  <div class="logo">MERC<span>EDES</span></div>
-  <ul class="nav-links">
-    <li><a href="#hero">Home</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#configurator">3D Tuning</a></li>
-    <li><a href="#portfolio">Portfolio</a></li>
-    <li><a href="#footer">Contact</a></li>
-  </ul>
-  <button class="nav-btn">Reserve Now</button>
-</nav>
-
-<section id="hero">
-  <div class="hero-bg"></div>
-  <div class="grid-lines"></div>
-
-  <div class="car-scene">
-    <div class="car-3d">
-      <div class="car-body">
-        <svg class="car-svg" viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="carGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#F0C040;stop-opacity:0.8"/>
-              <stop offset="100%" style="stop-color:#C9A84C;stop-opacity:0.4"/>
-            </linearGradient>
-          </defs>
-          <path d="M 100 100 Q 350 50 600 100 L 650 150 Q 600 180 100 180 Z" fill="url(#carGrad)" stroke="#F0C040" stroke-width="1"/>
-          <rect x="150" y="70" width="80" height="35" fill="rgba(100,150,200,0.3)" rx="5"/>
-          <rect x="280" y="60" width="140" height="45" fill="rgba(100,150,200,0.3)" rx="5"/>
-          <rect x="480" y="70" width="80" height="35" fill="rgba(100,150,200,0.3)" rx="5"/>
-          <circle cx="180" cy="185" r="35" fill="#1a1a1a" stroke="#F0C040" stroke-width="3"/>
-          <circle cx="180" cy="185" r="28" fill="none" stroke="#666" stroke-width="2"/>
-          <circle cx="520" cy="185" r="35" fill="#1a1a1a" stroke="#F0C040" stroke-width="3"/>
-          <circle cx="520" cy="185" r="28" fill="none" stroke="#666" stroke-width="2"/>
-          <rect x="100" y="150" width="20" height="25" fill="#CC2200" opacity="0.6"/>
-          <rect x="580" y="150" width="20" height="25" fill="#CC2200" opacity="0.6"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-
-  <div class="hero-content">
-    <span class="hero-tag">Luxury Performance</span>
-    <h1 class="hero-title">MERCEDES <span class="gold">3D TUNING</span></h1>
-    <p class="hero-sub">Experience Ultimate Customization</p>
-    <div class="hero-btns">
-      <button class="btn-primary">Start Tuning</button>
-      <button class="btn-outline">Learn More</button>
-    </div>
-  </div>
-
-  <div class="stats-bar">
-    <div class="stat-item">
-      <span class="stat-num">500+</span>
-      <span class="stat-label">Projects</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">98%</span>
-      <span class="stat-label">Satisfaction</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">24/7</span>
-      <span class="stat-label">Support</span>
-    </div>
-  </div>
-</section>
-
-<section id="services">
-  <div class="section-header">
-    <span class="section-tag">What We Offer</span>
-    <h2 class="section-title">Premium <span>Services</span></h2>
-  </div>
-
-  <div class="services-grid">
-    <div class="service-card">
-      <span class="service-num">01</span>
-      <span class="service-icon">⚙️</span>
-      <h3 class="service-name">PERFORMANCE</h3>
-      <p class="service-desc">Advanced engine tuning and optimization for maximum horsepower</p>
-    </div>
-    <div class="service-card">
-      <span class="service-num">02</span>
-      <span class="service-icon">🎨</span>
-      <h3 class="service-name">EXTERIOR</h3>
-      <p class="service-desc">Custom paint, body kits, and aerodynamic enhancements</p>
-    </div>
-    <div class="service-card">
-      <span class="service-num">03</span>
-      <span class="service-icon">💺</span>
-      <h3 class="service-name">INTERIOR</h3>
-      <p class="service-desc">Premium leather and custom upholstery</p>
-    </div>
-    <div class="service-card">
-      <span class="service-num">04</span>
-      <span class="service-icon">🛞</span>
-      <h3 class="service-name">WHEELS</h3>
-      <p class="service-desc">Custom alloy wheels and suspension upgrades</p>
-    </div>
-    <div class="service-card">
-      <span class="service-num">05</span>
-      <span class="service-icon">💡</span>
-      <h3 class="service-name">LIGHTING</h3>
-      <p class="service-desc">Advanced LED systems and custom lighting</p>
-    </div>
-    <div class="service-card">
-      <span class="service-num">06</span>
-      <span class="service-icon">📡</span>
-      <h3 class="service-name">TECHNOLOGY</h3>
-      <p class="service-desc">Smart systems and digital enhancements</p>
-    </div>
-  </div>
-</section>
-
-<section id="configurator">
-  <div class="section-header" style="margin-bottom:60px">
-    <span class="section-tag">Customize Your Mercedes</span>
-    <h2 class="section-title">3D <span>Configurator</span></h2>
-  </div>
-
-  <div class="config-container">
-    <div class="car-viewer">🏎️</div>
-
-    <div class="config-panel">
-      <h3 class="config-title">Your <span>Mercedes</span></h3>
-      <p class="config-subtitle">Configure now</p>
-
-      <div class="config-section">
-        <label class="config-label">Color</label>
-        <div class="color-options">
-          <button class="color-btn color-1"></button>
-          <button class="color-btn color-2"></button>
-          <button class="color-btn color-3"></button>
-          <button class="color-btn color-4"></button>
+    <!-- Header / Navigatsiya -->
+    <header class="p-6 flex justify-between items-center glass">
+        <div class="flex items-center gap-3">
+            <i class="fab fa-vimeo-v text-3xl"></i> <!-- Mercedes logosi ramziy -->
+            <h1 class="text-2xl font-bold tracking-widest uppercase">Mercedes-Benz <span class="text-blue-500">Tuning</span></h1>
         </div>
-      </div>
+        <nav class="hidden md:flex gap-8 text-sm uppercase tracking-wider">
+            <a href="#" class="hover:text-blue-500 transition">Modellar</a>
+            <a href="#" class="hover:text-blue-500 transition">Galereya</a>
+            <a href="#" class="hover:text-blue-500 transition">Saqlash</a>
+        </nav>
+        <button class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full font-semibold transition">
+            EXPORT 3D
+        </button>
+    </header>
 
-      <div class="config-section">
-        <label class="config-label">Power</label>
-        <div>
-          <input type="range" min="400" max="700" value="500" class="slider" id="powerSlider">
-          <div class="slider-value"><span id="powerValue">500</span> HP</div>
-        </div>
-      </div>
+    <main class="flex-1 flex flex-col md:flex-row">
+        
+        <!-- Chap tomondagi Model tanlash paneli -->
+        <aside class="w-full md:w-72 p-6 glass flex flex-col gap-4 overflow-y-auto">
+            <h2 class="text-gray-400 text-xs uppercase font-bold mb-2">Modelni tanlang</h2>
+            <div class="space-y-3">
+                <div class="p-3 glass rounded-lg cursor-pointer neon-border flex items-center gap-3">
+                    <div class="w-12 h-8 bg-gray-800 rounded"></div>
+                    <span>G-Class (G63)</span>
+                </div>
+                <div class="p-3 glass rounded-lg cursor-pointer neon-border flex items-center gap-3 border-blue-500">
+                    <div class="w-12 h-8 bg-gray-800 rounded"></div>
+                    <span class="text-blue-400">S-Class (W223)</span>
+                </div>
+                <div class="p-3 glass rounded-lg cursor-pointer neon-border flex items-center gap-3">
+                    <div class="w-12 h-8 bg-gray-800 rounded"></div>
+                    <span>GT 63 S</span>
+                </div>
+                <div class="p-3 glass rounded-lg cursor-pointer neon-border flex items-center gap-3">
+                    <div class="w-12 h-8 bg-gray-800 rounded"></div>
+                    <span>C-Class Coupe</span>
+                </div>
+            </div>
+        </aside>
 
-      <div class="config-section">
-        <label class="config-label">Suspension</label>
-        <div>
-          <input type="range" min="0" max="100" value="50" class="slider" id="suspensionSlider">
-          <div class="slider-value"><span id="suspensionValue">50</span>%</div>
-        </div>
-      </div>
+        <!-- Markaziy 3D Ko'rinish (Asosiy maydon) -->
+        <section class="flex-1 car-display">
+            <div class="platform"></div>
+            <!-- Bu yerga Three.js kodi orqali 3D model yuklanadi -->
+            <div class="text-center z-10">
+                <p class="text-gray-500 italic mb-4">3D Model yuklanmoqda...</p>
+                <h2 class="text-5xl font-black opacity-20 uppercase">S-CLASS 2024</h2>
+                <i class="fas fa-car text-9xl mt-4 text-blue-500 opacity-80"></i>
+            </div>
+            
+            <!-- Kamera boshqaruvi menyusi -->
+            <div class="absolute bottom-10 flex gap-4">
+                <button class="glass p-3 rounded-full hover:bg-white hover:text-black transition"><i class="fas fa-undo"></i></button>
+                <button class="glass p-3 rounded-full hover:bg-white hover:text-black transition"><i class="fas fa-search-plus"></i></button>
+                <button class="glass p-3 rounded-full hover:bg-white hover:text-black transition"><i class="fas fa-video"></i></button>
+            </div>
+        </section>
 
-      <button class="btn-primary" style="width:100%;margin-top:30px">Order Now</button>
-    </div>
-  </div>
-</section>
+        <!-- O'ng tomondagi Tuning Sozlamalari -->
+        <aside class="w-full md:w-80 p-6 glass overflow-y-auto">
+            <h2 class="text-gray-400 text-xs uppercase font-bold mb-6 text-center">Tuning Paneli</h2>
+            
+            <!-- Rang tanlash -->
+            <div class="mb-8">
+                <label class="text-sm mb-3 block">Kuzov rangi</label>
+                <div class="flex justify-between gap-2">
+                    <div class="w-8 h-8 rounded-full bg-black border-2 border-white cursor-pointer"></div>
+                    <div class="w-8 h-8 rounded-full bg-gray-500 cursor-pointer"></div>
+                    <div class="w-8 h-8 rounded-full bg-blue-900 cursor-pointer"></div>
+                    <div class="w-8 h-8 rounded-full bg-red-700 cursor-pointer"></div>
+                    <div class="w-8 h-8 rounded-full bg-white cursor-pointer"></div>
+                </div>
+            </div>
 
-<section id="portfolio">
-  <div class="section-header">
-    <span class="section-tag">Recent Projects</span>
-    <h2 class="section-title">Our <span>Portfolio</span></h2>
-  </div>
+            <!-- Diskalar tanlash -->
+            <div class="mb-8">
+                <label class="text-sm mb-3 block">Diska (Wheels)</label>
+                <select class="w-full bg-transparent border border-gray-600 p-2 rounded text-sm outline-none">
+                    <option class="bg-black">AMG Performance 21"</option>
+                    <option class="bg-black">Maybach Exclusive 20"</option>
+                    <option class="bg-black">Standard Multi-spoke</option>
+                </select>
+            </div>
 
-  <div class="portfolio-grid">
-    <div class="portfolio-item">
-      🏎️
-      <div class="portfolio-overlay">
-        <h3 class="portfolio-title">AMG GT</h3>
-        <p class="portfolio-desc">Performance Enhancement</p>
-      </div>
-    </div>
-    <div class="portfolio-item">
-      🚗
-      <div class="portfolio-overlay">
-        <h3 class="portfolio-title">E-Class</h3>
-        <p class="portfolio-desc">Full Customization</p>
-      </div>
-    </div>
-    <div class="portfolio-item">
-      💨
-      <div class="portfolio-overlay">
-        <h3 class="portfolio-title">S-Class</h3>
-        <p class="portfolio-desc">Luxury Upgrade</p>
-      </div>
-    </div>
-    <div class="portfolio-item">
-      ⚡
-      <div class="portfolio-overlay">
-        <h3 class="portfolio-title">C-Class</h3>
-        <p class="portfolio-desc">Turbo Boost</p>
-      </div>
-    </div>
-  </div>
-</section>
+            <!-- Oyna qoraytirish -->
+            <div class="mb-8">
+                <label class="text-sm mb-3 block">Oynalar (Tint)</label>
+                <input type="range" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                <div class="flex justify-between text-[10px] mt-1 text-gray-500">
+                    <span>0%</span>
+                    <span>50%</span>
+                    <span>100%</span>
+                </div>
+            </div>
 
-<footer id="footer">
-  <div class="footer-content">
-    <div class="footer-col">
-      <h3>About Us</h3>
-      <ul>
-        <li><a href="#">Our Story</a></li>
-        <li><a href="#">Team</a></li>
-        <li><a href="#">Careers</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h3>Services</h3>
-      <ul>
-        <li><a href="#">Performance</a></li>
-        <li><a href="#">Exterior</a></li>
-        <li><a href="#">Interior</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h3>Support</h3>
-      <ul>
-        <li><a href="#">FAQ</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">Warranty</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h3>Follow</h3>
-      <ul>
-        <li><a href="#">Instagram</a></li>
-        <li><a href="#">Facebook</a></li>
-        <li><a href="#">Twitter</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <div class="footer-left">© 2024 MERCEDES 3D TUNING</div>
-    <div class="footer-social">
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-      <a href="#">Cookies</a>
-    </div>
-  </div>
-</footer>
+            <!-- Qo'shimcha detallar -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center glass p-3 rounded">
+                    <span class="text-sm">Carbon Fiber Kit</span>
+                    <input type="checkbox" class="accent-blue-500">
+                </div>
+                <div class="flex justify-between items-center glass p-3 rounded">
+                    <span class="text-sm">Sport Suspension</span>
+                    <input type="checkbox" checked class="accent-blue-500">
+                </div>
+                <div class="flex justify-between items-center glass p-3 rounded">
+                    <span class="text-sm">Night Package</span>
+                    <input type="checkbox" class="accent-blue-500">
+                </div>
+            </div>
+        </aside>
+    </main>
 
-<script>
-document.getElementById('powerSlider').addEventListener('input',(e)=>{
-  document.getElementById('powerValue').textContent=e.target.value
-})
-
-document.getElementById('suspensionSlider').addEventListener('input',(e)=>{
-  document.getElementById('suspensionValue').textContent=e.target.value
-})
-
-document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
-  anchor.addEventListener('click',(e)=>{
-    e.preventDefault()
-    const target=document.querySelector(anchor.getAttribute('href'))
-    if(target)target.scrollIntoView({behavior:'smooth',block:'start'})
-  })
-})
-
-document.querySelectorAll('.color-btn').forEach(btn=>{
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('.color-btn').forEach(b=>b.style.borderColor='transparent')
-    this.style.borderColor='#F0C040'
-  })
-})
-</script>
+    <!-- Pastki Panel -->
+    <footer class="p-4 glass text-center text-[10px] text-gray-500 uppercase tracking-widest">
+        © 2026 Mercedes-Benz Configurator | Created for Professional Tuning
+    </footer>
 
 </body>
-  </html>
+</html>
