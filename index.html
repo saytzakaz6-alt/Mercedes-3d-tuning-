@@ -3,165 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mercedes-Benz 3D Tuning Studio</title>
+    <title>Mercedes 3D Real-Time Tuning</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Three.js Kutubxonasi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body {
-            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .neon-border:hover {
-            border-color: #007bff;
-            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
-            transition: 0.3s;
-        }
-        .car-display {
-            height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        /* Avtomobil joylashgan joy effekti */
-        .platform {
-            width: 500px;
-            height: 100px;
-            background: rgba(0, 123, 255, 0.2);
-            filter: blur(50px);
-            border-radius: 50%;
-            position: absolute;
-            bottom: 20px;
-        }
+        body { margin: 0; background: #050505; color: white; overflow: hidden; font-family: sans-serif; }
+        canvas { display: block; }
+        .ui-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .interactive { pointer-events: auto; }
+        .glass { background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-dot:hover { transform: scale(1.2); border-color: white; }
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body>
 
-    <!-- Header / Navigatsiya -->
-    <header class="p-6 flex justify-between items-center glass">
-        <div class="flex items-center gap-3">
-            <i class="fab fa-vimeo-v text-3xl"></i> <!-- Mercedes logosi ramziy -->
-            <h1 class="text-2xl font-bold tracking-widest uppercase">Mercedes-Benz <span class="text-blue-500">Tuning</span></h1>
-        </div>
-        <nav class="hidden md:flex gap-8 text-sm uppercase tracking-wider">
-            <a href="#" class="hover:text-blue-500 transition">Modellar</a>
-            <a href="#" class="hover:text-blue-500 transition">Galereya</a>
-            <a href="#" class="hover:text-blue-500 transition">Saqlash</a>
-        </nav>
-        <button class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full font-semibold transition">
-            EXPORT 3D
-        </button>
-    </header>
+    <!-- 3D Sahnani joylashtirish uchun konteyner -->
+    <div id="container" class="w-full h-screen"></div>
 
-    <main class="flex-1 flex flex-col md:flex-row">
+    <!-- UI Interfeys -->
+    <div class="ui-overlay flex flex-col justify-between p-6">
         
-        <!-- Chap tomondagi Model tanlash paneli -->
-        <aside class="w-full md:w-72 p-6 glass flex flex-col gap-4 overflow-y-auto">
-            <h2 class="text-gray-400 text-xs uppercase font-bold mb-2">Modelni tanlang</h2>
-            <div class="space-y-3">
-                <div class="p-3 glass rounded-lg cursor-pointer neon-border flex items-center gap-3">
-                    <div class="w-12 h-8 bg-gray-800 rounded"></div>
-                    <span>G-Class (G63)</span>
-                </div>
-                <div class="p-3 glass rounded-lg cursor-pointer neon-border flex items-center gap-3 border-blue-500">
-                    <div class="w-12 h-8 bg-gray-800 rounded"></div>
-                    <span class="text-blue-400">S-Class (W223)</span>
-                </div>
-                <div class="p-3 glass rounded-lg cursor-pointer neon-border flex items-center gap-3">
-                    <div class="w-12 h-8 bg-gray-800 rounded"></div>
-                    <span>GT 63 S</span>
-                </div>
-                <div class="p-3 glass rounded-lg cursor-pointer neon-border flex items-center gap-3">
-                    <div class="w-12 h-8 bg-gray-800 rounded"></div>
-                    <span>C-Class Coupe</span>
-                </div>
+        <!-- Yuqori qism -->
+        <div class="flex justify-between items-center interactive">
+            <div class="glass p-4 rounded-xl">
+                <h1 class="text-xl font-bold tracking-tighter">MERCEDES-BENZ <span class="text-blue-500">3D</span></h1>
+                <p class="text-[10px] text-gray-400">CONFIGURATOR V1.0</p>
             </div>
-        </aside>
+            <div class="glass px-6 py-3 rounded-full text-sm font-medium">S-CLASS (W223)</div>
+        </div>
 
-        <!-- Markaziy 3D Ko'rinish (Asosiy maydon) -->
-        <section class="flex-1 car-display">
-            <div class="platform"></div>
-            <!-- Bu yerga Three.js kodi orqali 3D model yuklanadi -->
-            <div class="text-center z-10">
-                <p class="text-gray-500 italic mb-4">3D Model yuklanmoqda...</p>
-                <h2 class="text-5xl font-black opacity-20 uppercase">S-CLASS 2024</h2>
-                <i class="fas fa-car text-9xl mt-4 text-blue-500 opacity-80"></i>
+        <!-- Pastki qism: Tuning Paneli -->
+        <div class="flex justify-center mb-10">
+            <div class="glass p-6 rounded-3xl interactive flex flex-col items-center gap-4">
+                <p class="text-xs uppercase tracking-widest text-gray-400">Kuzov rangini tanlang</p>
+                <div class="flex gap-4">
+                    <div class="color-dot bg-black" onclick="changeColor(0x000000)"></div>
+                    <div class="color-dot bg-gray-400" onclick="changeColor(0x888888)"></div>
+                    <div class="color-dot bg-blue-700" onclick="changeColor(0x0000ff)"></div>
+                    <div class="color-dot bg-red-600" onclick="changeColor(0xff0000)"></div>
+                    <div class="color-dot bg-white" onclick="changeColor(0xffffff)"></div>
+                </div>
+                <div class="mt-2 text-[10px] text-gray-500 italic">Sichqoncha bilan mashinani aylantirishingiz mumkin</div>
             </div>
+        </div>
+    </div>
+
+    <script>
+        let scene, camera, renderer, car;
+
+        function init() {
+            // 1. Sahna yaratish
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x050505);
+
+            // 2. Kamera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+            camera.position.y = 1;
+
+            // 3. Renderer (Tasvirni chiqarish)
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('container').appendChild(renderer.domElement);
+
+            // 4. Yorug'lik (Mashina ko'rinishi uchun)
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            // 5. Avtomobil o'rniga hozircha "3D Shakl" (Kuzov ramzi)
+            // Haqiqiy Mercedes .glb modelini yuklash uchun GLTFLoader ishlatiladi
+            const geometry = new THREE.BoxGeometry(2.5, 1, 1.2); 
+            const material = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.8, roughness: 0.2 });
+            car = new THREE.Mesh(geometry, material);
+            scene.add(car);
+
+            // Taglik (Platforma)
+            const grid = new THREE.GridHelper(10, 20, 0x007bff, 0x222222);
+            grid.position.y = -0.6;
+            scene.add(grid);
+
+            animate();
+        }
+
+        // Rangni o'zgartirish funksiyasi
+        function changeColor(colorHex) {
+            car.material.color.setHex(colorHex);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
             
-            <!-- Kamera boshqaruvi menyusi -->
-            <div class="absolute bottom-10 flex gap-4">
-                <button class="glass p-3 rounded-full hover:bg-white hover:text-black transition"><i class="fas fa-undo"></i></button>
-                <button class="glass p-3 rounded-full hover:bg-white hover:text-black transition"><i class="fas fa-search-plus"></i></button>
-                <button class="glass p-3 rounded-full hover:bg-white hover:text-black transition"><i class="fas fa-video"></i></button>
-            </div>
-        </section>
-
-        <!-- O'ng tomondagi Tuning Sozlamalari -->
-        <aside class="w-full md:w-80 p-6 glass overflow-y-auto">
-            <h2 class="text-gray-400 text-xs uppercase font-bold mb-6 text-center">Tuning Paneli</h2>
+            // Mashinani sekin aylantirib turish
+            car.rotation.y += 0.005;
             
-            <!-- Rang tanlash -->
-            <div class="mb-8">
-                <label class="text-sm mb-3 block">Kuzov rangi</label>
-                <div class="flex justify-between gap-2">
-                    <div class="w-8 h-8 rounded-full bg-black border-2 border-white cursor-pointer"></div>
-                    <div class="w-8 h-8 rounded-full bg-gray-500 cursor-pointer"></div>
-                    <div class="w-8 h-8 rounded-full bg-blue-900 cursor-pointer"></div>
-                    <div class="w-8 h-8 rounded-full bg-red-700 cursor-pointer"></div>
-                    <div class="w-8 h-8 rounded-full bg-white cursor-pointer"></div>
-                </div>
-            </div>
+            renderer.render(scene, camera);
+        }
 
-            <!-- Diskalar tanlash -->
-            <div class="mb-8">
-                <label class="text-sm mb-3 block">Diska (Wheels)</label>
-                <select class="w-full bg-transparent border border-gray-600 p-2 rounded text-sm outline-none">
-                    <option class="bg-black">AMG Performance 21"</option>
-                    <option class="bg-black">Maybach Exclusive 20"</option>
-                    <option class="bg-black">Standard Multi-spoke</option>
-                </select>
-            </div>
+        // Oyna o'zgarganda moslashish
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
 
-            <!-- Oyna qoraytirish -->
-            <div class="mb-8">
-                <label class="text-sm mb-3 block">Oynalar (Tint)</label>
-                <input type="range" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
-                <div class="flex justify-between text-[10px] mt-1 text-gray-500">
-                    <span>0%</span>
-                    <span>50%</span>
-                    <span>100%</span>
-                </div>
-            </div>
-
-            <!-- Qo'shimcha detallar -->
-            <div class="space-y-4">
-                <div class="flex justify-between items-center glass p-3 rounded">
-                    <span class="text-sm">Carbon Fiber Kit</span>
-                    <input type="checkbox" class="accent-blue-500">
-                </div>
-                <div class="flex justify-between items-center glass p-3 rounded">
-                    <span class="text-sm">Sport Suspension</span>
-                    <input type="checkbox" checked class="accent-blue-500">
-                </div>
-                <div class="flex justify-between items-center glass p-3 rounded">
-                    <span class="text-sm">Night Package</span>
-                    <input type="checkbox" class="accent-blue-500">
-                </div>
-            </div>
-        </aside>
-    </main>
-
-    <!-- Pastki Panel -->
-    <footer class="p-4 glass text-center text-[10px] text-gray-500 uppercase tracking-widest">
-        © 2026 Mercedes-Benz Configurator | Created for Professional Tuning
-    </footer>
-
+        init();
+    </script>
 </body>
 </html>
